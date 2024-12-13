@@ -5,4 +5,5 @@ sealed class Routes(val route: String) {
     object Pantalla1 : Routes("Pantalla1")
     object Pantalla2 : Routes("Pantalla2")
     object Pantalla3 : Routes("Pantalla3")
+    fun pantalla2(nombre: String) = "pantalla2/$nombre"
 }

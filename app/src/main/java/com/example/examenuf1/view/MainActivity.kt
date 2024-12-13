@@ -55,6 +55,9 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.Pantalla2.route) {
                             Pantalla2Screen(navController, viewModel())
                         }
+                        composable(Routes.Pantalla3.route) {
+                            Pantalla2Screen(navController, viewModel())
+                        }
 
                     }
                 }
@@ -177,29 +180,38 @@ fun Pantalla1Screen(navController: NavController, pantalla1ViewModel: Pantalla1V
 
 @Composable
 fun Pantalla2Screen(navController: NavController, pantalla2ViewModel: Pantalla2ViewModel) {
+    val nombre = navController.currentBackStackEntry?.arguments?.getString("nombre") ?: "Desconocido"
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.dragonball_daima_logo),
-                contentDescription = "Dragon logo",
-                modifier = Modifier
-                    .size(300.dp)
-                    .padding(bottom = 5.dp)
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.dragonball_daima_logo),
+                    contentDescription = "Dragon logo",
+                    modifier = Modifier
+                        .size(300.dp)
+                        .padding(bottom = 5.dp)
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = {
-                navController.popBackStack(Routes.MainActivity.route, false)
-            }) {
-                Text("Regresar a MainActivity")
+                Text(
+                    text = "Hola, $nombre!",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = {
+                    navController.popBackStack(Routes.MainActivity.route, false)
+                }) {
+                    Text("Regresar a MainActivity")
+                }
             }
         }
     }
@@ -214,17 +226,25 @@ fun Pantalla3Screen(navController: NavController, pantalla3ViewModel: Pantalla3V
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Bienvenido a Pantalla 3")
+            Image(
+                painter = painterResource(id = R.drawable.dragonball_daima_logo),
+                contentDescription = "Dragon logo",
+                modifier = Modifier
+                    .size(300.dp)
+                    .padding(bottom = 5.dp)
+                    .align(Alignment.CenterHorizontally) // Centrado horizontalmente
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
-                navController.popBackStack(Routes.MainActivity.route, false)
+                navController.popBackStack(Routes.Pantalla1.route, false)
             }) {
-                Text("Regresar a MainActivity")
+                Text("Regresar a Seleccion")
             }
         }
     }
  }
-}
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
