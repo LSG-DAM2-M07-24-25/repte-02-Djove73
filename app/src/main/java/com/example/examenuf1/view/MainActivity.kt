@@ -134,11 +134,7 @@ fun Pantalla1Screen(navController: NavController, pantalla1ViewModel: Pantalla1V
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Selecciona una imagen",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(16.dp)
-            )
+
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3), // Tres columnas
@@ -201,16 +197,11 @@ fun Pantalla2Screen(navController: NavController, sharedViewModel: SharedViewMod
 
         var inputName by remember { mutableStateOf("") }
 
-        Text(
-            text = "Ingresa tu nombre:",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(16.dp)
-        )
 
         TextField(
             value = inputName,
             onValueChange = { inputName = it },
-            placeholder = { Text("Nombre") },
+            placeholder = { Text("Nom del personantge") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
