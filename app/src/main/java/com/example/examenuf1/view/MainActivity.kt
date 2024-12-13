@@ -249,21 +249,21 @@ fun Pantalla3Screen(navController: NavController, sharedViewModel: SharedViewMod
                     .padding(bottom = 5.dp)
             )
 
-            Text(
-                text = "Hola, ${sharedViewModel.name}!",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(16.dp)
-            )
-
             sharedViewModel.images?.let { imageRes ->
                 Image(
                     painter = painterResource(id = imageRes),
                     contentDescription = "Imagen seleccionada",
                     modifier = Modifier
-                        .size(200.dp)
+                        .size(350.dp)
                         .padding(16.dp)
                 )
             }
+
+            Text(
+                text = "${sharedViewModel.name}!",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(16.dp)
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
