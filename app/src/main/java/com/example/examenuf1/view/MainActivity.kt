@@ -14,13 +14,16 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -33,6 +36,10 @@ import com.example.examenuf1.ui.viewmodel.Pantalla2ViewModel
 import com.example.examenuf1.ui.viewmodel.Pantalla3ViewModel
 import com.example.examenuf1.util.Routes
 
+class SharedViewModel : ViewModel() {
+    var name by mutableStateOf("")
+}
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +47,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             Examenuf1Theme {
                 val navController = rememberNavController()
+                val sharedViewModel = viewModel<SharedViewModel>() // Instancia compartida del ViewModel
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
@@ -53,12 +62,11 @@ class MainActivity : ComponentActivity() {
                             Pantalla1Screen(navController, viewModel())
                         }
                         composable(Routes.Pantalla2.route) {
-                            Pantalla2Screen(navController, viewModel())
+                            Pantalla2Screen(navController, sharedViewModel) // ViewModel compartido
                         }
                         composable(Routes.Pantalla3.route) {
-                            Pantalla2Screen(navController, viewModel())
+                            Pantalla3Screen(navController, sharedViewModel) // ViewModel compartido
                         }
-
                     }
                 }
             }
@@ -179,46 +187,54 @@ fun Pantalla1Screen(navController: NavController, pantalla1ViewModel: Pantalla1V
 }
 
 @Composable
-fun Pantalla2Screen(navController: NavController, pantalla2ViewModel: Pantalla2ViewModel) {
-    val nombre = navController.currentBackStackEntry?.arguments?.getString("nombre") ?: "Desconocido"
-
+fun Pantalla2Screen(navController: NavController, sharedViewModel: SharedViewModel) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+        Image(
+            painter = painterResource(id = R.drawable.dragonball_daima_logo),
+            contentDescription = "Dragon logo",
+            modifier = Modifier
+                .size(300.dp)
+                .padding(bottom = 5.dp)
+        )
+
+        var inputName by remember { mutableStateOf("") }
+
+        Text(
+            text = "Ingresa tu nombre:",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(16.dp)
+        )
+
+        TextField(
+            value = inputName,
+            onValueChange = { inputName = it },
+            placeholder = { Text("Nombre") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                sharedViewModel.name = inputName
+                navController.navigate(Routes.Pantalla3.route)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.dragonball_daima_logo),
-                    contentDescription = "Dragon logo",
-                    modifier = Modifier
-                        .size(300.dp)
-                        .padding(bottom = 5.dp)
-                )
-
-                Text(
-                    text = "Hola, $nombre!",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(16.dp)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = {
-                    navController.popBackStack(Routes.MainActivity.route, false)
-                }) {
-                    Text("Regresar a MainActivity")
-                }
-            }
+            Text("Continuar")
         }
     }
 }
 
 @Composable
-fun Pantalla3Screen(navController: NavController, pantalla3ViewModel: Pantalla3ViewModel) {
+fun Pantalla3Screen(navController: NavController, sharedViewModel: SharedViewModel) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -232,18 +248,23 @@ fun Pantalla3Screen(navController: NavController, pantalla3ViewModel: Pantalla3V
                 modifier = Modifier
                     .size(300.dp)
                     .padding(bottom = 5.dp)
-                    .align(Alignment.CenterHorizontally) // Centrado horizontalmente
+            )
+
+            Text(
+                text = "Hola, ${sharedViewModel.name}!",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(16.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
                 navController.popBackStack(Routes.Pantalla1.route, false)
             }) {
-                Text("Regresar a Seleccion")
+                Text("Regresar a Selección")
             }
         }
     }
- }
+}
 
 
 @Composable
