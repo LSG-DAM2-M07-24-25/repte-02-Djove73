@@ -38,6 +38,7 @@ import com.example.examenuf1.util.Routes
 
 class SharedViewModel : ViewModel() {
     var name by mutableStateOf("")
+    var images by mutableStateOf<Int?>(null)
 }
 
 class MainActivity : ComponentActivity() {
@@ -59,7 +60,7 @@ class MainActivity : ComponentActivity() {
                             MainScreen(navController, viewModel())
                         }
                         composable(Routes.Pantalla1.route) {
-                            Pantalla1Screen(navController, viewModel())
+                            Pantalla1Screen(navController, viewModel(), sharedViewModel)
                         }
                         composable(Routes.Pantalla2.route) {
                             Pantalla2Screen(navController, sharedViewModel) // ViewModel compartido
@@ -102,11 +103,10 @@ fun MainScreen(navController: NavController, mainViewModel: MainViewModel) {
 }
 
 @Composable
-fun Pantalla1Screen(navController: NavController, pantalla1ViewModel: Pantalla1ViewModel) {
+fun Pantalla1Screen(navController: NavController, pantalla1ViewModel: Pantalla1ViewModel, sharedViewModel: SharedViewModel) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Logo
         Image(
             painter = painterResource(id = R.drawable.dragonball_daima_logo),
             contentDescription = "Dragon logo",
@@ -127,7 +127,6 @@ fun Pantalla1Screen(navController: NavController, pantalla1ViewModel: Pantalla1V
 
         val selectedImage = remember { mutableStateOf<Int?>(null) }
 
-        // Contenido principal
         Column(
             modifier = Modifier
                 .weight(1f) // Ocupa todo el espacio disponible
@@ -171,9 +170,9 @@ fun Pantalla1Screen(navController: NavController, pantalla1ViewModel: Pantalla1V
             }
         }
 
-        // Botón en la parte inferior
         Button(
             onClick = {
+                sharedViewModel.images = selectedImage.value // Guarda la imagen seleccionada
                 navController.navigate(Routes.Pantalla2.route)
             },
             modifier = Modifier
@@ -256,6 +255,16 @@ fun Pantalla3Screen(navController: NavController, sharedViewModel: SharedViewMod
                 modifier = Modifier.padding(16.dp)
             )
 
+            sharedViewModel.images?.let { imageRes ->
+                Image(
+                    painter = painterResource(id = imageRes),
+                    contentDescription = "Imagen seleccionada",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(16.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
                 navController.popBackStack(Routes.Pantalla1.route, false)
@@ -270,7 +279,7 @@ fun Pantalla3Screen(navController: NavController, sharedViewModel: SharedViewMod
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = "$name!",
         modifier = modifier
     )
 }
